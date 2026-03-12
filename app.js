@@ -4,17 +4,23 @@ const App = {
     currentView: 'tasks',
 
     async init() {
-        // Show loading state while Firebase loads
+        // Fade while loading
         document.body.style.opacity = '0.4';
         document.body.style.pointerEvents = 'none';
-        try {
-            await Storage.init();
-        } catch (e) {
-            console.error('[App] Storage init failed:', e);
-        }
+
+        let signedIn = false;
+        try { signedIn = await Storage.init(); } catch (e) { console.error('[App] init error:', e); }
+
         document.body.style.opacity = '';
         document.body.style.pointerEvents = '';
 
+        if (!signedIn) {
+            this.showSignIn();
+            return;
+        }
+
+        this.hideSignIn();
+        this.updateUserDisplay();
         Points.checkMidnightReset();
         Tasks.renderAll();
         Tasks.setupDropZones();
@@ -23,9 +29,24 @@ const App = {
         this.updatePointsDisplay();
         this.bindEvents();
         this.startTimerLoop();
-
-        // Check midnight every minute
         setInterval(() => Points.checkMidnightReset(), 60000);
+    },
+
+    showSignIn() {
+        document.getElementById('signin-overlay').classList.add('active');
+    },
+
+    hideSignIn() {
+        document.getElementById('signin-overlay').classList.remove('active');
+    },
+
+    updateUserDisplay() {
+        const user = Storage.getUser();
+        if (!user) return;
+        const el = document.getElementById('user-name');
+        const img = document.getElementById('user-photo');
+        if (el) el.textContent = user.displayName || user.email;
+        if (img && user.photoURL) { img.src = user.photoURL; img.style.display = 'block'; }
     },
 
     bindEvents() {
