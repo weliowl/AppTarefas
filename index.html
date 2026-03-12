@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,6 +8,7 @@
   <meta name="description" content="Gerencie suas tarefas por prioridade, acompanhe prazos e ganhe pontos." />
   <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
 
   <!-- ── HEADER ── -->
@@ -183,6 +185,10 @@
   <!-- ── TOAST CONTAINER ── -->
   <div id="toast-container"></div>
 
+  <!-- ── FIREBASE SDK (compat) ── -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+
   <!-- ── SCRIPTS ── -->
   <script src="storage.js"></script>
   <script src="timer.js"></script>
@@ -192,4 +198,5 @@
   <script src="app.js"></script>
 
 </body>
+
 </html>

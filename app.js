@@ -3,7 +3,18 @@
 const App = {
     currentView: 'tasks',
 
-    init() {
+    async init() {
+        // Show loading state while Firebase loads
+        document.body.style.opacity = '0.4';
+        document.body.style.pointerEvents = 'none';
+        try {
+            await Storage.init();
+        } catch (e) {
+            console.error('[App] Storage init failed:', e);
+        }
+        document.body.style.opacity = '';
+        document.body.style.pointerEvents = '';
+
         Points.checkMidnightReset();
         Tasks.renderAll();
         Tasks.setupDropZones();
@@ -178,4 +189,4 @@ const App = {
     },
 };
 
-document.addEventListener('DOMContentLoaded', () => App.init());
+document.addEventListener('DOMContentLoaded', () => App.init().catch(console.error));
