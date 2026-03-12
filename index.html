@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AppTarefas — Gerenciador de Tarefas</title>
+  <meta name="description" content="Gerencie suas tarefas por prioridade, acompanhe prazos e ganhe pontos." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ── HEADER ── -->
+  <header class="header">
+    <h1>⚔ AppTarefas</h1>
+    <div class="points-bar">
+      <div class="pts-chip daily">
+        <span class="label">Hoje</span>
+        <span class="value" id="daily-pts">0</span>
+        <span class="label">pts</span>
+      </div>
+      <div class="pts-chip wallet">
+        <span class="label">💰 Carteira</span>
+        <span class="value" id="wallet-pts">0</span>
+        <span class="label">pts</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── NAV ── -->
+  <nav class="nav">
+    <button class="nav-tab active" data-view="tasks">📋 Tarefas</button>
+    <button class="nav-tab" data-view="archive">📦 Arquivo</button>
+    <button class="nav-tab" data-view="leisure">🎮 Lazeres</button>
+  </nav>
+
+  <!-- ── ALERTS ── -->
+  <div id="alerts-container"></div>
+
+  <!-- ── VIEW: TASKS ── -->
+  <section class="view active" id="view-tasks">
+    <div class="board">
+
+      <!-- Rank S -->
+      <div class="column rank-S">
+        <div class="col-header">
+          <span class="col-title">
+            <span class="rank-badge">S</span> Rank S
+          </span>
+          <button class="btn-add-task" id="add-S" data-rank="S" title="Adicionar tarefa">+</button>
+        </div>
+        <div class="col-body" id="col-S"></div>
+      </div>
+
+      <!-- Rank A -->
+      <div class="column rank-A">
+        <div class="col-header">
+          <span class="col-title">
+            <span class="rank-badge">A</span> Rank A
+          </span>
+          <button class="btn-add-task" data-rank="A" title="Adicionar tarefa">+</button>
+        </div>
+        <div class="col-body" id="col-A"></div>
+      </div>
+
+      <!-- Rank B -->
+      <div class="column rank-B">
+        <div class="col-header">
+          <span class="col-title">
+            <span class="rank-badge">B</span> Rank B
+          </span>
+          <button class="btn-add-task" data-rank="B" title="Adicionar tarefa">+</button>
+        </div>
+        <div class="col-body" id="col-B"></div>
+      </div>
+
+      <!-- Rank C -->
+      <div class="column rank-C">
+        <div class="col-header">
+          <span class="col-title">
+            <span class="rank-badge">C</span> Rank C
+          </span>
+          <button class="btn-add-task" data-rank="C" title="Adicionar tarefa">+</button>
+        </div>
+        <div class="col-body" id="col-C"></div>
+      </div>
+
+      <!-- Rank D -->
+      <div class="column rank-D">
+        <div class="col-header">
+          <span class="col-title">
+            <span class="rank-badge">D</span> Rank D
+          </span>
+          <button class="btn-add-task" data-rank="D" title="Adicionar tarefa">+</button>
+        </div>
+        <div class="col-body" id="col-D"></div>
+      </div>
+
+      <!-- Secundárias -->
+      <div class="column rank-Sec">
+        <div class="col-header">
+          <span class="col-title">
+            <span class="rank-badge">SEC</span> Secundárias
+          </span>
+          <button class="btn-add-task" data-rank="Sec" title="Adicionar tarefa">+</button>
+        </div>
+        <div class="col-body" id="col-Sec"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── VIEW: ARCHIVE ── -->
+  <section class="view" id="view-archive">
+    <h2 class="view-title">📦 Tarefas Arquivadas</h2>
+    <div class="archive-list" id="archive-list"></div>
+  </section>
+
+  <!-- ── VIEW: LEISURE ── -->
+  <section class="view" id="view-leisure">
+    <div class="leisure-wrap">
+      <div class="leisure-form-card">
+        <h3>🎮 Criar Novo Lazer</h3>
+        <form id="leisure-form">
+          <div class="leisure-row">
+            <div class="form-group" style="flex:2">
+              <label for="l-name">Nome do Lazer</label>
+              <input id="l-name" type="text" placeholder="Ex: 1h de Netflix" required />
+            </div>
+            <div class="form-group" style="flex:1">
+              <label for="l-cost">Custo (pts)</label>
+              <input id="l-cost" type="number" min="1" placeholder="20" required />
+            </div>
+          </div>
+          <button type="submit" class="btn-primary">+ Criar Lazer</button>
+        </form>
+      </div>
+
+      <h3 style="margin-bottom:14px; font-size:1rem;">Meus Lazeres</h3>
+      <div class="leisure-list" id="leisure-list"></div>
+    </div>
+  </section>
+
+  <!-- ── MODAL: CRIAR TAREFA ── -->
+  <div class="modal-backdrop" id="task-modal">
+    <div class="modal">
+      <h2>✚ Nova Tarefa <button class="modal-close" onclick="App.closeModal('task-modal')">✕</button></h2>
+      <form id="task-form">
+        <div class="form-group">
+          <label for="t-title">Título *</label>
+          <input id="t-title" type="text" placeholder="O que precisa ser feito?" required />
+        </div>
+        <div class="form-group">
+          <label for="t-desc">Descrição</label>
+          <textarea id="t-desc" placeholder="Detalhes adicionais (opcional)"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="t-deadline">Prazo *</label>
+            <input id="t-deadline" type="text" placeholder="Ex: 2 dias, 8 hrs, 30 min" required />
+            <p class="hint">Formatos: min, hrs, dias, semanas</p>
+          </div>
+          <div class="form-group">
+            <label for="t-points">Pontos</label>
+            <input id="t-points" type="number" min="1" value="10" placeholder="10" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="t-rank">Prioridade (Rank)</label>
+          <select id="t-rank">
+            <option value="S">⭐ Rank S — Máxima</option>
+            <option value="A">🟣 Rank A — Alta</option>
+            <option value="B" selected>🔵 Rank B — Média-Alta</option>
+            <option value="C">🟢 Rank C — Média</option>
+            <option value="D">⚪ Rank D — Baixa</option>
+            <option value="Sec">📎 Secundárias</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-primary">Criar Tarefa</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── TOAST CONTAINER ── -->
+  <div id="toast-container"></div>
+
+  <!-- ── SCRIPTS ── -->
+  <script src="storage.js"></script>
+  <script src="timer.js"></script>
+  <script src="points.js"></script>
+  <script src="leisure.js"></script>
+  <script src="tasks.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>
